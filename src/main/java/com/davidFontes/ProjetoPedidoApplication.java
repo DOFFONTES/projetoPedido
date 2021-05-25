@@ -13,6 +13,7 @@ import com.davidFontes.dominio.Cidade;
 import com.davidFontes.dominio.Cliente;
 import com.davidFontes.dominio.Endereco;
 import com.davidFontes.dominio.Estado;
+import com.davidFontes.dominio.ItemPedido;
 import com.davidFontes.dominio.Pagamento;
 import com.davidFontes.dominio.PagamentoComBoleto;
 import com.davidFontes.dominio.PagamentoComCartao;
@@ -25,6 +26,7 @@ import com.davidFontes.repositorios.CidadeRepositorio;
 import com.davidFontes.repositorios.ClienteRepositorio;
 import com.davidFontes.repositorios.EnderecoRepositorio;
 import com.davidFontes.repositorios.EstadoRepositorio;
+import com.davidFontes.repositorios.ItemPedidoRepositorio;
 import com.davidFontes.repositorios.PagamentoRepositorio;
 import com.davidFontes.repositorios.PedidoRepositorio;
 import com.davidFontes.repositorios.ProdutoRepositorio;
@@ -48,6 +50,8 @@ public class ProjetoPedidoApplication implements CommandLineRunner {
 	private PedidoRepositorio pedidoRepositorio;
 	@Autowired
 	private PagamentoRepositorio pagamentoRepositorio;
+	@Autowired
+	private ItemPedidoRepositorio itemPedidoRepositorio;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ProjetoPedidoApplication.class, args);
@@ -110,6 +114,19 @@ public class ProjetoPedidoApplication implements CommandLineRunner {
 		
 		pedidoRepositorio.saveAll(Arrays.asList(ped1, ped2));
 		pagamentoRepositorio.saveAll(Arrays.asList(pagto1,pagto2));
+		
+		ItemPedido ip1 = new ItemPedido(ped1, p1, 0.0, 1, 2000.0);
+		ItemPedido ip2 = new ItemPedido(ped1, p3, 0.0, 2, 80.00);
+		ItemPedido ip3 = new ItemPedido(ped2, p2, 100.00, 1, 800.00);
+		
+		ped1.getItens().addAll(Arrays.asList(ip1, ip2));
+		ped2.getItens().add(ip3);
+		
+		p1.getItens().add(ip1);
+		p2.getItens().add(ip3);
+		p3.getItens().add(ip2);
+		
+		itemPedidoRepositorio.saveAll(Arrays.asList(ip1, ip2, ip3));
 		
 	}
 
