@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.davidFontes.servicos.exception.ObjetoNaoEncontradoException;
+import com.davidFontes.servicos.exception.ViolacaoDeRestricaoDeIntegridadeException;
 
 @ControllerAdvice
 public class ManipuladorDeExcecaoRecurso {
@@ -19,4 +20,13 @@ public class ManipuladorDeExcecaoRecurso {
 		
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
 	}
+	
+	@ExceptionHandler(ViolacaoDeRestricaoDeIntegridadeException.class)
+	public ResponseEntity<ErroPadrao> restricaoDeIntegridade(ViolacaoDeRestricaoDeIntegridadeException e, HttpServletRequest request){
+		
+		ErroPadrao err = new ErroPadrao(HttpStatus.BAD_REQUEST.value(), e.getMessage(), System.currentTimeMillis());
+		
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+	}
+	
 }
