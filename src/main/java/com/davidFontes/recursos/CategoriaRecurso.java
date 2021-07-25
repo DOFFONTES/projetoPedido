@@ -4,8 +4,12 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,10 +18,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.davidFontes.dominio.Categoria;
+import com.davidFontes.dto.CategoriaDTO;
 import com.davidFontes.servicos.CategoriaServico;
 
 @RestController
@@ -31,8 +37,31 @@ public class CategoriaRecurso {
 	public ResponseEntity<Categoria> buscar(@PathVariable("id") Integer id) {
 		Categoria obj = servico.buscar(id);
 		
-		obj.add(linkTo(methodOn(this.getClass()).buscar(id)).withSelfRel());
+		obj.add(linkTo(methodOn(this.getClass()).buscarTodos()).withRel("Lista de Categorias"));
 		return ResponseEntity.ok().body(obj);		
+	}
+	
+	@GetMapping
+	public ResponseEntity<List<CategoriaDTO>> buscarTodos() {
+		List<Categoria> lista = servico.buscarTodos();
+		List<CategoriaDTO> listaDTO = lista.stream()
+				.map(obj -> new CategoriaDTO(obj)).collect(Collectors.toList());
+		for(CategoriaDTO li: listaDTO) {
+			li.add(linkTo(methodOn(this.getClass()).buscar(li.getId())).withSelfRel());
+		}		
+		return new ResponseEntity<List<CategoriaDTO>>(listaDTO, HttpStatus.OK);		
+	}
+	
+	@GetMapping(path = "/pagina")
+	public ResponseEntity<Page<CategoriaDTO>> buscarPaginas(
+			@RequestParam(value="pagina", defaultValue = "0") Integer page, 
+			@RequestParam(value="linesPerPage", defaultValue = "24")Integer linesPerPage, 
+			@RequestParam(value="direction", defaultValue = "nome")String direction, 
+			@RequestParam(value="orderBy", defaultValue = "ASC")String orderBy) {
+		Page<Categoria> lista = servico.findPage(page, linesPerPage, direction, orderBy);
+		Page<CategoriaDTO> listaDTO = lista.map(obj -> new CategoriaDTO(obj));
+			
+		return ResponseEntity.ok().body(listaDTO);	
 	}
 	
 	@PostMapping
@@ -40,8 +69,6 @@ public class CategoriaRecurso {
 		obj = servico.insert(obj);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
 				.path("/{id}").buildAndExpand(obj.getId()).toUri();
-		
-		//obj.add(linkTo(methodOn(this.getClass()).buscar(obj.getId())).withRel("Link da Categoria"));
 		
 		return ResponseEntity.created(uri).build();
 	}
