@@ -2,6 +2,9 @@ package com.davidFontes.dto;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+
 import org.springframework.hateoas.RepresentationModel;
 
 import com.davidFontes.dominio.Categoria;
@@ -10,6 +13,9 @@ public class CategoriaDTO extends RepresentationModel<Categoria> implements Seri
 	private static final long serialVersionUID = 1L;
 	
 	private Integer id;
+	
+	@NotEmpty(message="Preenchimento obrigatório")
+	@Size(min=5, max=80, message="O tamanho deve ser entre 5 e 80 caracteres")
 	private String nome;
 	
 	public CategoriaDTO() {

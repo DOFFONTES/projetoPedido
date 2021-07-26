@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.davidFontes.dominio.Categoria;
+import com.davidFontes.dto.CategoriaDTO;
 import com.davidFontes.repositorios.CategoriaRepositorio;
 import com.davidFontes.servicos.exception.ObjetoNaoEncontradoException;
 import com.davidFontes.servicos.exception.ViolacaoDeRestricaoDeIntegridadeException;
@@ -63,5 +64,9 @@ public class CategoriaServico {
 	public Page<Categoria> buscarPagina(Integer page, Integer linesPerPage, String direction, String orderBy) {
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
 		return repo.findAll(pageRequest);
+	}
+	
+	public Categoria fromDTO(CategoriaDTO objDto) {
+		return new Categoria(objDto.getId(), objDto.getNome());
 	}
 }
