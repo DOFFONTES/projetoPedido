@@ -39,8 +39,9 @@ public class CategoriaServico {
 	}
 
 	public Categoria update(Categoria obj) {
-		buscar(obj.getId());
-		obj = repo.save(obj);
+		Categoria newObj = buscar(obj.getId());
+		atualizaDado(newObj, obj);
+		obj = repo.save(newObj);
 		
 		return obj;
 	}
@@ -68,5 +69,9 @@ public class CategoriaServico {
 	
 	public Categoria fromDTO(CategoriaDTO objDto) {
 		return new Categoria(objDto.getId(), objDto.getNome());
+	}
+	
+	private void atualizaDado(Categoria newObj, Categoria obj) {
+		newObj.setNome(obj.getNome());
 	}
 }
