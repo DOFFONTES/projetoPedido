@@ -1,13 +1,26 @@
 package com.davidFontes.recursos;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.davidFontes.dominio.Cliente;
+import com.davidFontes.dto.ClienteDTO;
 import com.davidFontes.servicos.ClienteServico;
 
 @RestController
@@ -22,5 +35,45 @@ public class ClienteRecurso {
 		Cliente obj = servico.buscar(id);
 		
 		return ResponseEntity.ok().body(obj);		
+	}
+	
+	@GetMapping
+	public ResponseEntity<List<ClienteDTO>> buscarTodos() {
+		List<Cliente> lista = servico.buscarTodos();
+		List<ClienteDTO> listaDTO = lista.stream()
+				.map(obj -> new ClienteDTO(obj)).collect(Collectors.toList());
+		for(ClienteDTO li: listaDTO) {
+			li.add(linkTo(methodOn(this.getClass()).buscar(li.getId())).withSelfRel());
+		}		
+		return new ResponseEntity<List<ClienteDTO>>(listaDTO, HttpStatus.OK);		
+	}
+	
+	@GetMapping(path = "/pagina")
+	public ResponseEntity<Page<ClienteDTO>> buscarPaginas(
+			@RequestParam(value="pagina", defaultValue = "0") Integer page, 
+			@RequestParam(value="linesPerPage", defaultValue = "24")Integer linesPerPage, 
+			@RequestParam(value="direction", defaultValue = "nome")String direction, 
+			@RequestParam(value="orderBy", defaultValue = "ASC")String orderBy) {
+		Page<Cliente> lista = servico.findPage(page, linesPerPage, direction, orderBy);
+		Page<ClienteDTO> listaDTO = lista.map(obj -> new ClienteDTO(obj));
+			
+		return ResponseEntity.ok().body(listaDTO);	
+	}
+	
+	@PutMapping("/{id}")
+	public ResponseEntity<Void> update(@PathVariable("id") Integer id, @RequestBody ClienteDTO objDto){
+		Cliente obj =servico.fromDTO(objDto);
+		obj.setId(id);
+		obj = servico.update(obj);
+		
+		return ResponseEntity.noContent().build();
+	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> delete(@PathVariable("id") int id) {
+		
+		servico.delete(id);
+		
+		return ResponseEntity.noContent().build();		
 	}
 }
