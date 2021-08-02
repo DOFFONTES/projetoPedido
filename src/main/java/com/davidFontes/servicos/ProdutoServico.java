@@ -19,10 +19,10 @@ import com.davidFontes.servicos.exception.ObjetoNaoEncontradoException;
 public class ProdutoServico {
 	
 	@Autowired
-	ProdutoRepositorio repo;
+	private ProdutoRepositorio repo;
 	
 	@Autowired
-	CategoriaRepositorio categoriaRepositorio;
+	private CategoriaRepositorio categoriaRepositorio;
 	
 	public Produto buscar(Integer id) {
 		 Optional<Produto> obj = repo.findById(id);
@@ -30,7 +30,7 @@ public class ProdutoServico {
 				 "Objeto não encontrado! Id: " + id + ", Tipo: " + Produto.class.getName())); 
 		 } 
 
-	public Page<Produto> search(String nome, List<Integer> ids, Integer page, Integer linesPerPage, String orderBy, String direction) {
+	public Page<Produto> search(String nome, List<Integer> ids, Integer page, Integer linesPerPage, String direction, String orderBy) {
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
 		List<Categoria> categorias = categoriaRepositorio.findAllById(ids);
 		return repo.findDistinctByNomeIgnoreCaseContainingAndCategoriasIn(nome, categorias, pageRequest);
