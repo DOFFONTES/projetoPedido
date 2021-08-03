@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import com.davidFontes.servicos.DBServico;
+import com.davidFontes.servicos.EmailServico;
+import com.davidFontes.servicos.SmtpEmailServico;
 
 @Configuration
 @Profile("dev")
@@ -30,5 +32,10 @@ public class DevConfig {
 		dbServico.instanciaTesteBancoDeDados();
 		
 		return true;
+	}
+	
+	@Bean 
+	public EmailServico emailServico() {
+		return new SmtpEmailServico();
 	}
 }
