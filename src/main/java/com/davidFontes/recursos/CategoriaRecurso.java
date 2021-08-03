@@ -62,6 +62,9 @@ public class CategoriaRecurso {
 			@RequestParam(value="orderBy", defaultValue = "ASC")String orderBy) {
 		Page<Categoria> lista = servico.findPage(page, linesPerPage, direction, orderBy);
 		Page<CategoriaDTO> listaDTO = lista.map(obj -> new CategoriaDTO(obj));
+		for(CategoriaDTO li: listaDTO) {
+			li.add(linkTo(methodOn(this.getClass()).buscar(li.getId())).withSelfRel());
+		}	
 			
 		return ResponseEntity.ok().body(listaDTO);	
 	}

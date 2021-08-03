@@ -64,10 +64,6 @@ public abstract class Pagamento implements Serializable{
 		this.pedido = pedido;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;

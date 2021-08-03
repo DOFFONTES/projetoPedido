@@ -31,7 +31,13 @@ public class PedidoServico {
 	private PagamentoRepositorio pagamentoRepositorio;
 	
 	@Autowired
+	private ClienteServico clienteServico;
+	
+	@Autowired
 	private ItemPedidoRepositorio itemPedidoRepositorio;
+	
+	@Autowired
+	private EmailServico emailServico;
 	
 	public Pedido buscar(Integer id) {
 		 Optional<Pedido> obj = repo.findById(id);
@@ -42,6 +48,7 @@ public class PedidoServico {
 	public Pedido insert(Pedido obj) {
 		obj.setId(null);
 		obj.setInstante(new Date());
+		obj.setCliente(clienteServico.buscar(obj.getCliente().getId()));
 		obj.getPagamento().setEstado(EstadoPagamento.PENDENTE);
 		obj.getPagamento().setPedido(obj);
 		
@@ -55,10 +62,14 @@ public class PedidoServico {
 		
 		for (ItemPedido ip: obj.getItens()) {
 			ip.setDesconto(0.0);
-			ip.setPreco(produtoServico.buscar(ip.getProduto().getId()).getPreco());
+			ip.setProduto(produtoServico.buscar(ip.getProduto().getId()));
+			ip.setPreco(ip.getProduto().getPreco());
 			ip.setPedido(obj);
 		}
 		itemPedidoRepositorio.saveAll(obj.getItens());
+		
+		emailServico.enviarEmailConfirmacaoPedido(obj);
+		//System.out.println(obj);
 		return obj;
 	}
 

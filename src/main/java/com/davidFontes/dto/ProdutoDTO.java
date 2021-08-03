@@ -2,9 +2,12 @@ package com.davidFontes.dto;
 
 import java.io.Serializable;
 
+import org.springframework.hateoas.RepresentationModel;
+
+import com.davidFontes.dominio.Categoria;
 import com.davidFontes.dominio.Produto;
 
-public class ProdutoDTO implements Serializable {
+public class ProdutoDTO extends RepresentationModel<Categoria> implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	private Integer id;
