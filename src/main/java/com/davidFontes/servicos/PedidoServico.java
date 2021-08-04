@@ -68,11 +68,8 @@ public class PedidoServico {
 		}
 		itemPedidoRepositorio.saveAll(obj.getItens());
 		
-		emailServico.enviarEmailConfirmacaoPedido(obj);
+		emailServico.enviarEmailHTMLConfirmaçãoPedido(obj);
 		//System.out.println(obj);
 		return obj;
 	}
-
-
-
 }
