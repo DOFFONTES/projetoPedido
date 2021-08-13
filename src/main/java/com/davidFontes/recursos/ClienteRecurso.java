@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,6 +44,7 @@ public class ClienteRecurso {
 		return ResponseEntity.ok().body(obj);		
 	}
 	
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	@GetMapping
 	public ResponseEntity<List<ClienteDTO>> buscarTodos() {
 		List<Cliente> lista = servico.buscarTodos();
@@ -54,6 +56,7 @@ public class ClienteRecurso {
 		return new ResponseEntity<List<ClienteDTO>>(listaDTO, HttpStatus.OK);		
 	}
 	
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	@GetMapping(path = "/pagina")
 	public ResponseEntity<Page<ClienteDTO>> buscarPaginas(
 			@RequestParam(value="pagina", defaultValue = "0") Integer page, 
@@ -85,6 +88,7 @@ public class ClienteRecurso {
 		return ResponseEntity.noContent().build();
 	}
 	
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delete(@PathVariable("id") int id) {
 		

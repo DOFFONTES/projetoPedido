@@ -15,11 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.davidFontes.dominio.Cidade;
 import com.davidFontes.dominio.Cliente;
 import com.davidFontes.dominio.Endereco;
+import com.davidFontes.dominio.enums.Perfil;
 import com.davidFontes.dominio.enums.TipoCliente;
 import com.davidFontes.dto.ClienteDTO;
 import com.davidFontes.dto.ClienteNewDTO;
 import com.davidFontes.repositorios.ClienteRepositorio;
 import com.davidFontes.repositorios.EnderecoRepositorio;
+import com.davidFontes.security.UserSS;
+import com.davidFontes.servicos.exception.AutorizacaoException;
 import com.davidFontes.servicos.exception.ObjetoNaoEncontradoException;
 import com.davidFontes.servicos.exception.ViolacaoDeRestricaoDeIntegridadeException;
 
@@ -44,6 +47,12 @@ public class ClienteServico {
 	}
 	
 	public Cliente buscar(Integer id) {
+		
+		UserSS user = UserServico.authenticated();
+		if (user==null || !user.hasRole(Perfil.ADMIN) && !id.equals(user.getId())) {
+			throw new AutorizacaoException("Acesso negado");
+		}
+		
 		 Optional<Cliente> obj = repo.findById(id);
 		 return obj.orElseThrow(() -> new ObjetoNaoEncontradoException(
 				 "Objeto não encontrado! Id: " + id + ", Tipo: " + Cliente.class.getName())); 

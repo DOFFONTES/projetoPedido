@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.davidFontes.servicos.exception.AutorizacaoException;
 import com.davidFontes.servicos.exception.ObjetoNaoEncontradoException;
 import com.davidFontes.servicos.exception.ViolacaoDeRestricaoDeIntegridadeException;
 
@@ -39,6 +40,13 @@ public class ManipuladorDeExcecaoRecurso {
 			err.addErro(x.getField(), x.getDefaultMessage());
 		}
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+	}
+	
+	@ExceptionHandler(AutorizacaoException.class)
+	public ResponseEntity<ErroPadrao> authorization(AutorizacaoException e, HttpServletRequest request) {
+
+		ErroPadrao err = new ErroPadrao(HttpStatus.FORBIDDEN.value(), e.getMessage(), System.currentTimeMillis());
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(err);
 	}
 	
 }
