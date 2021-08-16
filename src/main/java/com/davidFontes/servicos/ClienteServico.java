@@ -3,6 +3,8 @@ package com.davidFontes.servicos;
 import java.util.List;
 import java.util.Optional;
 
+import java.net.URI;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.davidFontes.dominio.Cidade;
 import com.davidFontes.dominio.Cliente;
@@ -37,6 +40,9 @@ public class ClienteServico {
 	
 	@Autowired
 	private EnderecoRepositorio enderecoRepositorio;
+	
+	@Autowired
+	private S3Servico s3Servico;
 	
 	@Transactional
 	public Cliente insert(Cliente obj) {
@@ -116,5 +122,9 @@ public class ClienteServico {
 	private void atualizaDado(Cliente newObj, Cliente obj) {
 		newObj.setNome(obj.getNome());
 		newObj.setEmail(obj.getEmail());
+	}
+	
+	public URI carregaFotoPerfil(MultipartFile multipartFile) {
+		return s3Servico.uploadFile(multipartFile);
 	}
 }
