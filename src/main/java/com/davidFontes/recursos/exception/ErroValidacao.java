@@ -20,8 +20,4 @@ public class ErroValidacao extends ErroPadrao {
 		erros.add(new MensagemDeCampo(nomeDoCampo, mensagem));
 	}
 	
-	
-
-	
-
 }

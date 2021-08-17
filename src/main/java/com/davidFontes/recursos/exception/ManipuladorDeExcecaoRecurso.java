@@ -9,6 +9,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
+import com.davidFontes.servicos.exception.ArquivoException;
 import com.davidFontes.servicos.exception.AutorizacaoException;
 import com.davidFontes.servicos.exception.ObjetoNaoEncontradoException;
 import com.davidFontes.servicos.exception.ViolacaoDeRestricaoDeIntegridadeException;
@@ -47,6 +51,36 @@ public class ManipuladorDeExcecaoRecurso {
 
 		ErroPadrao err = new ErroPadrao(HttpStatus.FORBIDDEN.value(), e.getMessage(), System.currentTimeMillis());
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(err);
+	}
+	
+	@ExceptionHandler(ArquivoException.class)
+	public ResponseEntity<ErroPadrao> arquivo(ArquivoException e, HttpServletRequest request) {
+
+		ErroPadrao err = new ErroPadrao(HttpStatus.BAD_REQUEST.value(), e.getMessage(), System.currentTimeMillis());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+	}
+	
+	@ExceptionHandler(AmazonServiceException .class)
+	public ResponseEntity<ErroPadrao> amazonService(AmazonServiceException e, HttpServletRequest request) {
+
+		HttpStatus code = HttpStatus.valueOf(e.getErrorCode());
+		
+		ErroPadrao err = new ErroPadrao(code.value(), e.getMessage(), System.currentTimeMillis());
+		return ResponseEntity.status(code).body(err);
+	}
+	
+	@ExceptionHandler(AmazonClientException.class)
+	public ResponseEntity<ErroPadrao> amazonClient(AmazonClientException e, HttpServletRequest request) {
+
+		ErroPadrao err = new ErroPadrao(HttpStatus.BAD_REQUEST.value(), e.getMessage(), System.currentTimeMillis());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+	}
+	
+	@ExceptionHandler(AmazonS3Exception.class)
+	public ResponseEntity<ErroPadrao> amazonS3(AmazonS3Exception e, HttpServletRequest request) {
+
+		ErroPadrao err = new ErroPadrao(HttpStatus.BAD_REQUEST.value(), e.getMessage(), System.currentTimeMillis());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
 	}
 	
 }

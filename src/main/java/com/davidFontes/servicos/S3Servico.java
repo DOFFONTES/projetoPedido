@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.davidFontes.servicos.exception.ArquivoException;
 
 @Service
 public class S3Servico {
@@ -33,7 +34,7 @@ public class S3Servico {
 			String tipoArquivo = multipartFile.getContentType();
 			return uploadFile(is, nomeArquivo, tipoArquivo);
 		} catch (IOException e) {
-			throw new RuntimeException("Erro de IO: " + e.getMessage());
+			throw new ArquivoException("Erro de IO: " + e.getMessage());
 		}
 			
 	}
@@ -49,7 +50,7 @@ public class S3Servico {
 			return s3client.getUrl(bucketName, nomeArquivo).toURI();
 		
 		} catch (URISyntaxException e) {
-			throw new RuntimeException("Erro ao converter URL para URI");
+			throw new ArquivoException("Erro ao converter URL para URI");
 		}
 	
 	}
