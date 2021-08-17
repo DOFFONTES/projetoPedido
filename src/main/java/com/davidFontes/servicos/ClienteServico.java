@@ -1,9 +1,8 @@
 package com.davidFontes.servicos;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
-
-import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -125,6 +124,20 @@ public class ClienteServico {
 	}
 	
 	public URI carregaFotoPerfil(MultipartFile multipartFile) {
-		return s3Servico.uploadFile(multipartFile);
+		
+		UserSS user = UserServico.authenticated();
+		
+		if(user == null) {
+			throw new AutorizacaoException("Acesso negado");
+		}
+		URI uri = s3Servico.uploadFile(multipartFile);
+		
+		Optional<Cliente> cli = repo.findById(user.getId());
+
+		cli.orElse(null).setImagemUrl(uri.toString());
+
+		repo.save(cli.orElse(null));
+		
+		return uri;
 	}
 }
