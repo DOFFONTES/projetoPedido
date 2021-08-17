@@ -51,6 +51,9 @@ public class ClienteServico {
 	@Autowired
 	private ImagemServico imagemServico;
 	
+	@Value("${img.profile.size}")
+	private Integer size;
+	
 	@Transactional
 	public Cliente insert(Cliente obj) {
 		obj.setId(null);
@@ -139,11 +142,13 @@ public class ClienteServico {
 			throw new AutorizacaoException("Acesso negado");
 		}
 		
-		BufferedImage img = imagemServico.getJpgImageFromFile(multipartFile);
+		BufferedImage jpgImage = imagemServico.getJpgImageFromFile(multipartFile);
+		jpgImage = imagemServico.cropSquare(jpgImage);
+		jpgImage = imagemServico.resize(jpgImage, size);
 		
 		String nomeArquivo = prefix + user.getId() + ".jpg";
 		
 		
-		return s3Servico.uploadFile(imagemServico.getInputStream(img, "jpg"), nomeArquivo, "image");
+		return s3Servico.uploadFile(imagemServico.getInputStream(jpgImage, "jpg"), nomeArquivo, "image");
 	}
 }
