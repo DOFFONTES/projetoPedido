@@ -8,8 +8,10 @@ public class ErroValidacao extends ErroPadrao {
 	
 	List<MensagemDeCampo> erros = new ArrayList<>();
 	
-	public ErroValidacao(Integer status, String msg, Long tempo) {
-		super(status, msg, tempo);
+	
+
+	public ErroValidacao(Long timestamp, Integer status, String error, String message, String path) {
+		super(timestamp, status, error, message, path);
 	}
 
 	public List<MensagemDeCampo> getErros() {
