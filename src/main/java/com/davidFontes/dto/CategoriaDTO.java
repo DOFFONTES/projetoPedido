@@ -9,7 +9,7 @@ import org.springframework.hateoas.RepresentationModel;
 
 import com.davidFontes.dominio.Categoria;
 
-public class CategoriaDTO extends RepresentationModel<Categoria> implements Serializable{
+public class CategoriaDTO extends RepresentationModel<CategoriaDTO> implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private Integer id;

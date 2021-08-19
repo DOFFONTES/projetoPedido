@@ -8,12 +8,11 @@ import javax.validation.constraints.Size;
 
 import org.springframework.hateoas.RepresentationModel;
 
-import com.davidFontes.dominio.Categoria;
 import com.davidFontes.dominio.Cliente;
 import com.davidFontes.servicos.validacao.ClienteUpdate;
 
 @ClienteUpdate
-public class ClienteDTO extends RepresentationModel<Categoria> implements Serializable{
+public class ClienteDTO extends RepresentationModel<ClienteDTO> implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private Integer id;
