@@ -45,7 +45,7 @@ public class ClienteRecurso {
 		return ResponseEntity.ok().body(obj);		
 	}
 	
-	@GetMapping("/{busca}/{email}")
+	@GetMapping("/busca/email")
 	public ResponseEntity<Cliente> find(@RequestParam(value="value") String email) {
 		Cliente obj = servico.findByEmail(email);
 		return ResponseEntity.ok().body(obj);

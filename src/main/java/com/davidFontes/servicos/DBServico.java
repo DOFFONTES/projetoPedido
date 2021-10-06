@@ -63,7 +63,7 @@ public class DBServico {
 		Categoria cat4 = new Categoria(null, "Eletrônicos");
 		Categoria cat5 = new Categoria(null, "Jardinagem");
 		Categoria cat6 = new Categoria(null, "Decoração");
-		Categoria cat7 = new Categoria(null, "Informática");
+		Categoria cat7 = new Categoria(null, "Perfumaria");
 		
 		Produto p1 = new Produto(null, "Computador", 2000.00);
 		Produto p2 = new Produto(null, "Impressora", 800.00);
@@ -171,15 +171,15 @@ public class DBServico {
 		
 		p1.getCategorias().addAll(Arrays.asList(cat1, cat4));
 		p2.getCategorias().addAll(Arrays.asList(cat1, cat2, cat4));
-		p3.getCategorias().addAll(Arrays.asList(cat1, cat2));
-		p4.getCategorias().add(cat1);
-		p5.getCategorias().add(cat1);
-		p6.getCategorias().add(cat1);
-		p7.getCategorias().add(cat1);
-		p8.getCategorias().add(cat1);
-		p9.getCategorias().add(cat1);
-		p10.getCategorias().add(cat1);
-		p11.getCategorias().add(cat1);
+		p3.getCategorias().addAll(Arrays.asList(cat1, cat4));
+		p4.getCategorias().add(cat2);
+		p5.getCategorias().add(cat3);
+		p6.getCategorias().add(cat3);
+		p7.getCategorias().add(cat4);
+		p8.getCategorias().add(cat5);
+		p9.getCategorias().add(cat6);
+		p10.getCategorias().add(cat6);
+		p11.getCategorias().add(cat7);
 		
 		categoriaRepositorio.saveAll(Arrays.asList(cat1, cat2, cat3, cat4, cat5, cat6, cat7));	
 		produtoRepositorio.saveAll(Arrays.asList(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11));
